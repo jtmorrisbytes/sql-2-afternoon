@@ -12,3 +12,4 @@ select sum(album.album_id) "Num Albums" from artist
 inner join album on
 artist.artist_id = album.album_id
 group by artist.artist_id;
+
