@@ -1,7 +1,7 @@
 create table users (
-  user_id serial primary key,
+  users_id serial primary key,
   name text,
-  email text
+  email text unique
  );
  create table product (
    product_id int primary key,
@@ -31,6 +31,7 @@ values
   (2);
  insert into orders_product(order_id,product_id)
 values (0,0),(0,1),(0,2),(1,0),(1,2),(2,1);
+
 -- first order
  select product.price, product.name from orders
  inner join orders_product on orders.order_id = orders_product.order_id
@@ -40,4 +41,17 @@ where orders.order_id = 0;
  select sum(product.price) as "Total Cost", orders.order_id from orders
  inner join orders_product on orders.order_id = orders_product.order_id
  inner join product on product.product_id = orders_product.product_id
- group by orders.order_id order by orders.order_id
+ group by orders.order_id order by orders.order_id;
+--add user reference to orders
+alter table orders add column users_id int;
+alter table orders add constraint fk_orders_users foreign key (users_id) references users(users_id)
+
+
+update orders set users_id = (select users_id from users where email = 'jthecybertinkerer@gmail.com')
+where order_id = 0 returning *;
+
+update orders set users_id = (select users_id from users where email = 'cool@sign.bob.com')
+where order_id = 1;
+
+update orders set users_id = (select users_id from users where email = 'respect@thatiswhatitmeanstome.com')
+where order_id = 2 returning *;
